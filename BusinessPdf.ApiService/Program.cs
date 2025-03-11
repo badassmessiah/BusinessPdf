@@ -43,6 +43,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "BusinessPdf API v1");
         c.RoutePrefix = "swagger";
     });
+    app.MapGet("/", () => Results.Redirect("/swagger"));
 }
 
 app.Run();
