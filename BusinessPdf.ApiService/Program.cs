@@ -60,8 +60,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var seeder = new DataSeeder(roleManager);
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var seeder = new DataSeeder(roleManager, userManager);
     await seeder.SeedRolesAsync();
+    await seeder.SeedAdminUserAsync();
 }
 
 // Configure the HTTP request pipeline.
