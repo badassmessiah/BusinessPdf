@@ -39,17 +39,22 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+        // Find user by email first
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            return Unauthorized(new { Message = "Invalid credentials" });
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, false, false);
 
         if (result.Succeeded)
         {
-            var user = await _userManager.FindByNameAsync(model.Email);
-            var token = GenerateJwtToken(user);
-
+            var token = await GenerateJwtToken(user);
             return Ok(new { Token = token });
         }
 
-        return Unauthorized();
+        return Unauthorized(new { Message = "Invalid credentials" });
     }
 
     private async Task<string> GenerateJwtToken(ApplicationUser user)
@@ -72,7 +77,7 @@ public class AuthController : ControllerBase
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddDays(30),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
