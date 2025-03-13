@@ -18,7 +18,7 @@
                     .ToArray();
                 return forecast;
             })
-            .WithName("GetWeatherForecast");
+            .WithTags("Weather");
         }
 
         public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

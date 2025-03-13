@@ -24,13 +24,13 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
+        var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name };
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "User");
-            return Ok(new { Message = "User registered successfully" });
+            return Ok(new { Message = "User registered successfully", User = user });
         }
 
         return BadRequest(result.Errors);
@@ -81,5 +81,65 @@ public class AuthController : ControllerBase
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    [HttpPost("changerole")]
+    public async Task<IActionResult> ChangeRole(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        if (await _userManager.IsInRoleAsync(user, "User"))
+        {
+            await _userManager.RemoveFromRoleAsync(user, "User");
+            await _userManager.AddToRoleAsync(user, "Admin");
+            return Ok(new { Message = "Role changed to Admin", User = user });
+        } else if (await _userManager.IsInRoleAsync(user, "Admin"))
+        {
+            await _userManager.RemoveFromRoleAsync(user, "Admin");
+            await _userManager.AddToRoleAsync(user, "User");
+            return Ok(new { Message = "Role changed to User", User = user });
+        }
+
+        return BadRequest(new { Message = "Role change failed" });
+    }
+
+    [HttpPost("getuserrole")]
+    public async Task<IActionResult> GetUserRole(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        var userRoles = await _userManager.GetRolesAsync(user);
+        return Ok(new { Roles = userRoles });
+    }
+
+    [HttpPost("changepassword")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+    {
+        var user = await _userManager.FindByIdAsync(model.UserId);
+        if (user == null)
+        {
+            return NotFound(new { Message = "User not found" });
+        }
+
+        var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+        if (!removePasswordResult.Succeeded)
+        {
+            return BadRequest(removePasswordResult.Errors);
+        }
+
+        var addPasswordResult = await _userManager.AddPasswordAsync(user, model.NewPassword);
+        if (addPasswordResult.Succeeded)
+        {
+            return Ok(new { Message = "Password changed successfully" });
+        }
+
+        return BadRequest(addPasswordResult.Errors);
     }
 }
