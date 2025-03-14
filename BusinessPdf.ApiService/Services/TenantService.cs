@@ -69,5 +69,14 @@ namespace BusinessPdf.ApiService.Services
                 .ToListAsync();
         }
 
+        public async Task<List<TenantModel>> GetTenantsForUserAsync(string userId)
+        {
+            return await _context.ApplicationUserTenants
+                .Where(ut => ut.UserId == userId)
+                .Include(ut => ut.TenantModel)
+                .Select(ut => ut.TenantModel)
+                .ToListAsync();
+        }
+
     }
 }

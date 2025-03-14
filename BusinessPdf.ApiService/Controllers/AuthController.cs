@@ -1,4 +1,5 @@
 ﻿using BusinessPdf.ApiService.Models;
+using BusinessPdf.ApiService.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -13,12 +14,18 @@ public class AuthController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IConfiguration _configuration;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+    public AuthController(
+    UserManager<ApplicationUser> userManager,
+    SignInManager<ApplicationUser> signInManager,
+    IConfiguration configuration,
+    IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     [HttpPost("register")]
@@ -60,15 +67,24 @@ public class AuthController : ControllerBase
     private async Task<string> GenerateJwtToken(ApplicationUser user)
     {
         var userRoles = await _userManager.GetRolesAsync(user);
-
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.NameIdentifier, user.Id)
+            new Claim("UserId", user.Id)
         };
 
-        claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+        // Add user's tenant IDs to claims
+        var tenantService = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<TenantService>();
+        var userTenants = await tenantService.GetTenantsForUserAsync(user.Id);
+
+        // Add each tenant ID as a separate claim
+        foreach (var tenant in userTenants)
+        {
+            claims.Add(new Claim("TenantId", tenant.Id.ToString()));
+        }
+
+        claims.AddRange(userRoles.Select(role => new Claim("UserRole", role)));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

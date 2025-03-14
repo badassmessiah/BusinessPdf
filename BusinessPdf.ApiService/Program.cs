@@ -59,6 +59,9 @@ builder.Services.AddSwaggerGen(c =>
 //    options.SerializerOptions.WriteIndented = true;
 //});
 
+builder.Services.AddHttpContextAccessor();
+
+
 
 builder.Services.AddScoped<TenantService>();
 
