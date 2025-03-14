@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace BusinessPdf.ApiService.Models
+﻿namespace BusinessPdf.ApiService.Models
 {
-    public class ApplicationUser : IdentityUser
+    public class TenantModel
     {
-        public Guid TenantID { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
 
         // Many-to-many relationship
