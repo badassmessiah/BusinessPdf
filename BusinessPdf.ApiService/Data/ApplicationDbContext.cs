@@ -1,4 +1,5 @@
 ﻿using BusinessPdf.ApiService.Models;
+using BusinessPdf.ApiService.Models.PDF;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,13 +7,14 @@ namespace BusinessPdf.ApiService.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<TenantModel> Tenants { get; set; }
-        public DbSet<ApplicationUserTenant> ApplicationUserTenants { get; set; }
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+        public DbSet<TenantModel> Tenants { get; set; }
+        public DbSet<ApplicationUserTenant> ApplicationUserTenants { get; set; }
+        public DbSet<CompanyInfo> CompanyInfos { get; set; }
+        public DbSet<InvoiceModel> InvoiceModels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,6 +31,7 @@ namespace BusinessPdf.ApiService.Data
                 .HasOne(t => t.TenantModel)
                 .WithMany(tm => tm.ApplicationUserTenants)
                 .HasForeignKey(t => t.TenantId);
+
         }
     }
 }

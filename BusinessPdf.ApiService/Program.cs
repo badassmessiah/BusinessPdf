@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using BusinessPdf.ApiService.Services;
 using QuestPDF.Infrastructure;
+using BusinessPdf.ApiService.Services.InvoiceServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,23 +51,15 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-//builder.Services.AddControllers()
-//    .AddJsonOptions(options =>
-//    {
-//        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-//        options.JsonSerializerOptions.WriteIndented = true;
-//    });
-//builder.Services.ConfigureHttpJsonOptions(options =>
-//{
-//    options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-//    options.SerializerOptions.WriteIndented = true;
-//});
 
 builder.Services.AddHttpContextAccessor();
 
-
+//My services
 
 builder.Services.AddScoped<TenantService>();
+builder.Services.AddScoped<CompanyInfoService>();
+builder.Services.AddScoped<InvoiceTemplateService>();
+
 
 // Add services to the container.
 builder.Services.AddProblemDetails();

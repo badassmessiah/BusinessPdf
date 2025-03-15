@@ -5,7 +5,8 @@ namespace BusinessPdf.ApiService.Models.PDF
 {
     public class InvoiceModel
     {
-        public int InvoiceId { get; set; }
+        public Guid Id { get; set; }
+        public string InvoiceNumber { get; set; }
         public DateTime IssueDate { get; set; }
         public DateTime DueDate { get; set; }
 

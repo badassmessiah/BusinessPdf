@@ -22,4 +22,8 @@
     <ProjectReference Include="..\BusinessPdf.ServiceDefaults\BusinessPdf.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\InvoiceControllers\" />
+  </ItemGroup>
+
 </Project>
