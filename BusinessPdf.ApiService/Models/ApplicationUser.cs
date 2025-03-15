@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BusinessPdf.ApiService.Models.Invoice;
+using Microsoft.AspNetCore.Identity;
 
 namespace BusinessPdf.ApiService.Models
 {
@@ -8,5 +9,7 @@ namespace BusinessPdf.ApiService.Models
 
         public string JobTitle { get; set; }
         public ICollection<ApplicationUserTenant> ApplicationUserTenants { get; set; }
+
+        public ICollection<InvoiceModel> InvoiceModels { get; set; }
     }
 }

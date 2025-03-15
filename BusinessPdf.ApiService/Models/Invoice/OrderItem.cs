@@ -1,4 +1,4 @@
-﻿namespace BusinessPdf.ApiService.Models.PDF
+﻿namespace BusinessPdf.ApiService.Models.Invoice
 {
     public class OrderItem
     {

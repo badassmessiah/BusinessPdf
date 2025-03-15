@@ -1,5 +1,5 @@
 ﻿using BusinessPdf.ApiService.Models;
-using BusinessPdf.ApiService.Models.PDF;
+using BusinessPdf.ApiService.Models.Invoice;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

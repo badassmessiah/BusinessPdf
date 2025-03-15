@@ -1,5 +1,5 @@
 ﻿using BusinessPdf.ApiService.Data;
-using BusinessPdf.ApiService.Models.PDF;
+using BusinessPdf.ApiService.Models.Invoice;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessPdf.ApiService.Services.InvoiceServices

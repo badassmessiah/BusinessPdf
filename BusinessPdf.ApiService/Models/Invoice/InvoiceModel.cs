@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Net;
 
-namespace BusinessPdf.ApiService.Models.PDF
+namespace BusinessPdf.ApiService.Models.Invoice
 {
     public class InvoiceModel
     {
@@ -20,6 +20,5 @@ namespace BusinessPdf.ApiService.Models.PDF
 
         public double GrandTotalPrice { get; set; }
         public double GrandTotalPriceWithVat { get; set; }
-        public ApplicationUser User { get; set; }
     }
 }
