@@ -6,7 +6,7 @@ namespace BusinessPdf.ApiService.Models
     {
         public string Name { get; set; }
 
-        // Many-to-many relationship
+        public string JobTitle { get; set; }
         public ICollection<ApplicationUserTenant> ApplicationUserTenants { get; set; }
     }
 }
