@@ -116,6 +116,7 @@ app.UseExceptionHandler();
 app.MapWeatherForecastEndpoints();
 app.MapUserEndpoints();
 app.MapTenantEndpoints();
+app.MapInvoiceTemplateEndpoints();
 
 app.UseAuthentication();
 app.UseAuthorization();

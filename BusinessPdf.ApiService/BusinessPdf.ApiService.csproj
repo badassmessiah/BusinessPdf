@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\InvoiceControllers\**" />
+    <Content Remove="Controllers\InvoiceControllers\**" />
+    <EmbeddedResource Remove="Controllers\InvoiceControllers\**" />
+    <None Remove="Controllers\InvoiceControllers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.14">
@@ -23,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\InvoiceControllers\" />
+    <Folder Include="Controllers\InvoiceEndpoints\" />
   </ItemGroup>
 
 </Project>
