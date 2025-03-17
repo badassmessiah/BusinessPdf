@@ -16,7 +16,7 @@ namespace BusinessPdf.ApiService.Controllers
                 return Results.Ok(invoices);
             }).WithTags("InvoiceOperations");
 
-            endpoints.MapGet("/invoices/{id}", async (InvoiceTemplateService invoiceService, string id) =>
+            endpoints.MapGet("/invoices/{id:guid}", async (InvoiceTemplateService invoiceService, Guid id) =>
             {
                 var invoice = await invoiceService.GetByIdAsync(id);
                 return invoice != null ? Results.Ok(invoice) : Results.NotFound();
@@ -26,7 +26,7 @@ namespace BusinessPdf.ApiService.Controllers
             {
                 var invoice = await invoiceService.GetByNumberAsync(number);
                 return invoice != null ? Results.Ok(invoice) : Results.NotFound();
-            }).WithTags("invoiceOperations");
+            }).WithTags("InvoiceOperations");
 
             endpoints.MapPost("/invoices", async (InvoiceTemplateService invoiceService, InvoiceModel invoiceModel) =>
             {
@@ -34,9 +34,9 @@ namespace BusinessPdf.ApiService.Controllers
                 return Results.Created($"/invoices/{createdInvoice.Id}", createdInvoice);
             }).WithTags("InvoiceOperations");
 
-            endpoints.MapPut("/invoices/{id}", async (InvoiceTemplateService invoiceService, string id, InvoiceModel invoiceModel) =>
+            endpoints.MapPut("/invoices/{id:guid}", async (InvoiceTemplateService invoiceService, Guid id, InvoiceModel invoiceModel) =>
             {
-                if (id != invoiceModel.Id.ToString())
+                if (id != invoiceModel.Id)
                 {
                     return Results.BadRequest("Invoice ID mismatch.");
                 }
@@ -45,7 +45,7 @@ namespace BusinessPdf.ApiService.Controllers
                 return Results.Ok(updatedInvoice);
             }).WithTags("InvoiceOperations");
 
-            endpoints.MapDelete("/invoices/{id}", async (InvoiceTemplateService invoiceService, string id) =>
+            endpoints.MapDelete("/invoices/{id:guid}", async (InvoiceTemplateService invoiceService, Guid id) =>
             {
                 await invoiceService.DeleteAsync(id);
                 return Results.NoContent();

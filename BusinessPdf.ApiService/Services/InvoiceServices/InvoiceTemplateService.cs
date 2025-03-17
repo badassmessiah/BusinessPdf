@@ -18,14 +18,14 @@ namespace BusinessPdf.ApiService.Services.InvoiceServices
             return await _context.InvoiceModels.ToListAsync();
         }
 
-        public async Task<InvoiceModel> GetByIdAsync(string id)
+        public async Task<InvoiceModel> GetByIdAsync(Guid id)
         {
             return await _context.InvoiceModels.FindAsync(id);
         }
 
         public async Task<InvoiceModel> GetByNumberAsync(string number)
         {
-            return await _context.InvoiceModels.FindAsync(number);
+            return await _context.InvoiceModels.FirstOrDefaultAsync(i => i.InvoiceNumber == number);
         }
 
         public async Task<InvoiceModel> CreateAsync(InvoiceModel invoiceModel)
@@ -42,7 +42,7 @@ namespace BusinessPdf.ApiService.Services.InvoiceServices
             return invoiceModel;
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(Guid id)
         {
             var invoiceModel = await _context.InvoiceModels.FindAsync(id);
             if (invoiceModel != null)
