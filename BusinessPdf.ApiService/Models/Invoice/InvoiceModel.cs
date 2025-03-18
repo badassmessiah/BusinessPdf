@@ -5,7 +5,7 @@ namespace BusinessPdf.ApiService.Models.Invoice
 {
     public class InvoiceModel
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string InvoiceNumber { get; set; }
         public DateTime IssueDate { get; set; }
         public DateTime DueDate { get; set; }

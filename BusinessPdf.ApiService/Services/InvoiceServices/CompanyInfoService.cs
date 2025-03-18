@@ -1,6 +1,7 @@
 ﻿using BusinessPdf.ApiService.Data;
 using BusinessPdf.ApiService.Models.Invoice;
 using Microsoft.EntityFrameworkCore;
+using BusinessPdf.ApiService.DTOs.InvoiceDto;
 
 namespace BusinessPdf.ApiService.Services.InvoiceServices
 {
@@ -13,38 +14,88 @@ namespace BusinessPdf.ApiService.Services.InvoiceServices
             _context = context;
         }
 
-        public async Task<IEnumerable<CompanyInfo>> GetAllAsync()
+        public async Task<IEnumerable<CompanyInfoDto>> GetAllAsync()
         {
-            return await _context.CompanyInfos.ToListAsync();
+            var entities = await _context.CompanyInfos.ToListAsync();
+            return entities.Select(ToDto).ToList();
         }
 
-        public async Task<CompanyInfo> GetByIdAsync(Guid id)
+        public async Task<CompanyInfoDto> GetByIdAsync(Guid id)
         {
-            return await _context.CompanyInfos.FindAsync(id);
+            var entity = await _context.CompanyInfos.FindAsync(id);
+            return entity is not null ? ToDto(entity) : null;
         }
 
-        public async Task<CompanyInfo> CreateAsync(CompanyInfo companyInfo)
+        public async Task<CompanyInfoDto> CreateAsync(CompanyInfoDto dto)
         {
-            _context.CompanyInfos.Add(companyInfo);
+            var entity = ToEntity(dto);
+            _context.CompanyInfos.Add(entity);
             await _context.SaveChangesAsync();
-            return companyInfo;
+            return ToDto(entity);
         }
 
-        public async Task<CompanyInfo> UpdateAsync(CompanyInfo companyInfo)
+        public async Task<CompanyInfoDto> UpdateAsync(Guid id, CompanyInfoDto dto)
         {
-            _context.Entry(companyInfo).State = EntityState.Modified;
+            var entity = await _context.CompanyInfos.FindAsync(id);
+            if (entity == null)
+                return null;
+
+            entity.Name = dto.Name;
+            entity.Address = dto.Address;
+            entity.City = dto.City;
+            entity.Country = dto.Country;
+            entity.VatNumber = dto.VatNumber;
+            entity.PhoneNumber = dto.PhoneNumber;
+            entity.WebSite = dto.WebSite;
+            entity.SwiftInfo = dto.SwiftInfo;
+            entity.IbanInfo = dto.IbanInfo;
+
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return companyInfo;
+
+            return ToDto(entity);
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var companyInfo = await _context.CompanyInfos.FindAsync(id);
-            if (companyInfo != null)
+            var entity = await _context.CompanyInfos.FindAsync(id);
+            if (entity != null)
             {
-                _context.CompanyInfos.Remove(companyInfo);
+                _context.CompanyInfos.Remove(entity);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        private static CompanyInfoDto ToDto(CompanyInfo entity)
+        {
+            return new CompanyInfoDto
+            {
+                Name = entity.Name,
+                Address = entity.Address,
+                City = entity.City,
+                Country = entity.Country,
+                VatNumber = entity.VatNumber,
+                PhoneNumber = entity.PhoneNumber,
+                WebSite = entity.WebSite,
+                SwiftInfo = entity.SwiftInfo,
+                IbanInfo = entity.IbanInfo
+            };
+        }
+
+        private static CompanyInfo ToEntity(CompanyInfoDto dto)
+        {
+            return new CompanyInfo
+            {
+                Name = dto.Name,
+                Address = dto.Address,
+                City = dto.City,
+                Country = dto.Country,
+                VatNumber = dto.VatNumber,
+                PhoneNumber = dto.PhoneNumber,
+                WebSite = dto.WebSite,
+                SwiftInfo = dto.SwiftInfo,
+                IbanInfo = dto.IbanInfo
+            };
         }
     }
 }
